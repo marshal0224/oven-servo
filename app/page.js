@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 
 import { useState, useEffect, useRef } from "react";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
-import Plotly from "plotly.js";
+// import Plotly from "plotly.js";
 import { Button, Checkbox, Col, Divider, Form, InputNumber, Layout, List, Tooltip, Radio, Row, Select, Space, Switch, Typography} from 'antd';
 
 import 'katex/dist/katex.min.css';
@@ -76,6 +76,7 @@ export default function Home() {
   }
 
   const combinedImageDownload = async () => {
+    const Plotly = await import("plotly.js-dist-min")
     const refs = [iPlotRef, vPlotRef, pPlotRef];
     const plotNodes = refs.map((ref) => {
       if (ref.current) {

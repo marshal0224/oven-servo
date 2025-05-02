@@ -19,6 +19,7 @@
     "next": "^15.1.6",
     "plotly": "^1.0.6",
     "plotly.js": "^2.35.3",
+    "plotly.js-dist-min": "^3.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-plotly.js": "^2.6.0",
