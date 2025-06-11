@@ -1,5 +1,5 @@
-// input format: Letter int int int
-// normal output format: "I"int"V"int
+// input format: Letter (ramp [U]p or [D]own) int (starting PWM) int (seconds per 1 PWM up) int (target PWM)
+// normal output format:  int I (current); int V (voltage); int P (power); double S (power setpoint); double R (effective power stabilization range as a percentage, turns of stabilization beyond +- r) 
 // special output format: %%Letter
 
 volatile int rampTimer = 0; // time iterator, always start with 0
@@ -25,6 +25,8 @@ void setup() {
   Serial.begin(9600);
   
   pinMode(6, OUTPUT); // signal channel driving the PWM value to the constant current source
+  pinMode(A0, INPUT);
+  pinMode(A1, INPUT);
   pinMode(A2, INPUT); // fuse channel that listens for the flow meter signal and force PWM output to 0 if there is no water
 
   analogWrite(6, 0);
@@ -41,7 +43,7 @@ void rampUp() {
   } else {
     Serial.println("%%P");
     double plus = 2.5 / 1023.0 * abs(analogRead(A1)) * 16;
-    double minus = 2.5 / 1023.0 * abs(analogRead(A0)) * 4.9;
+    double minus = 2.5 / 1023.0 * abs(analogRead(A0)) * 19;
     double v = plus - minus;
     double k = 51.0 / 14000.0;
     double b = 3.0 / 140.0;
@@ -151,7 +153,6 @@ void loop() {
   } else if (strcmp(letter, "s") == 0) {
     setpoint = numbers[0];
     range = numbers[1] / 100.0;
-  } else {
-    delay(500);
   }
+  delay(500);
 }

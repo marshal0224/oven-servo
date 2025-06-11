@@ -40,7 +40,7 @@ export default function Home() {
   const [VData, setVData] = useState({ x: [], y: [] });
   const [PData, setPData] = useState({ x: [], y: [] });
   const [displayData, setDisplayData] = useState({ Vx: [], Vy: [], Ix: [], Iy: [], Px: [], Py: [] });
-  const [PWM2I, setPWM2I] = useState( { k: 51/14000, b: 3/140 });
+  const [PWM2I, setPWM2I] = useState( { k: 0.0154, b: 0.005 });
   const [rampForm] = Form.useForm();
   const [PIDForm] = Form.useForm();
   const [refresh, setRefresh] = useState(false);
@@ -48,7 +48,7 @@ export default function Home() {
   const [quote, setQuote] = useState("");
   const [clearPlots, setClearPlots] = useState(false);
   const [stabParams, setStabParams] = useState({ setpoint: 1, range: 5 });
-  const [maxPower, setMaxPower] = useState(10);
+  const [maxPower, setMaxPower] = useState(25);
   const [maxPowerForm, setMaxPowerForm] = useState("");
   const [flag, setFlag] = useState(false);
   const [interlockOn, setInterlockOn] = useState(false);
@@ -110,12 +110,12 @@ export default function Home() {
     const link = document.createElement("a");
     const now = new Date();
     link.download = `IVP_${formatCentralTime(now)}.png`;
-    link.href = canvas.toxURL("image/png");
+    link.href = canvas.toDataURL("image/png");
     link.click();
   }
 
   useEffect(() => {
-    fetch('https://api.quotable.io/random?tags=science')
+    fetch('http://api.quotable.io/random?tags=science')
       .then((response) => response.json())
       .then((data) => {
         setQuote({ text: data.content, author: data.author });
@@ -211,7 +211,7 @@ export default function Home() {
         const sensedM = parseInt(match[6], 10);
         const current = PWM2I.k * parseInt(PWM, 10) + PWM2I.b;
         const trueP = 2.5 / 1023 * sensedP * 16;
-        const trueM = 2.5 / 1023 * sensedM * 4.9;
+        const trueM = 2.5 / 1023 * sensedM * 19;
         const trueV = trueP - trueM;
         const power = trueV * current;
         setPWMData(prev => ({
@@ -613,7 +613,7 @@ export default function Home() {
                   name="start"
                   rules={[
                     {
-                      required: true,
+                      required: rampForm.getFieldValue("mode") === "U",
                       message: 'Please input!',
                     },
                   ]}
@@ -641,7 +641,7 @@ export default function Home() {
                   name="period"
                   rules={[
                     {
-                      required: true,
+                      required: rampForm.getFieldValue("mode") === "U",
                       message: 'Please input!',
                     },
                   ]}
@@ -669,7 +669,7 @@ export default function Home() {
                   name="target"
                   rules={[
                     {
-                      required: true,
+                      required: rampForm.getFieldValue("mode") === "U",
                       message: 'Please input!',
                     },
                   ]}
